@@ -29,6 +29,18 @@ async function run() {
 
     const equipmentCollection = client.db('equipmentDB').collection('equipment')
 
+    app.get('/addEquipment', async(req, res)=>{
+        const cursor = equipmentCollection.find().limit(6)
+        const result = await cursor.toArray()
+        res.send(result)
+    })
+
+    app.get('/addEquipments', async(req, res) =>{
+        const cursor = equipmentCollection.find()
+        const result = await cursor.toArray()
+        res.send(result)
+    })
+
     app.post('/addEquipment', async(req, res) =>{
         const newEquipment = req.body
         console.log(newEquipment);
