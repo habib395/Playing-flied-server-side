@@ -43,14 +43,25 @@ async function run() {
 
     app.post('/addEquipment', async(req, res) =>{
         const newEquipment = req.body
-        console.log(newEquipment);
+        // console.log(newEquipment);
         const result = await equipmentCollection.insertOne(newEquipment)
         res.send(result)
     })
 
+    app.get('/equipment/:email', async(req, res) =>{
+        const email = req.params.email
+        if(!email){
+            return res.status(400).send({ message: 'Email is required'})
+        }
+        const cursor = equipmentCollection.find({ UserEmail: email})
+        const result = await cursor.toArray()
+        if(result.length === 0){
+            return res.status(404).send({ message: ' Unfortunately , No equipment found for this user.'})
+        }
+        res.send(result)
+    })
 
-
-
+  
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
