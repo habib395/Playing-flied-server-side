@@ -1,7 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 require('dotenv').config()
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000
 const app = express()
 
@@ -41,6 +41,13 @@ async function run() {
         res.send(result)
     })
 
+    app.get('/addEquipment/:id', async(req, res) =>{
+        const id = req.params.id 
+        const query = {_id: new ObjectId(id)}
+        const result = await equipmentCollection.findOne(query) 
+        res.send(result)
+    })
+
     app.post('/addEquipment', async(req, res) =>{
         const newEquipment = req.body
         // console.log(newEquipment);
@@ -61,7 +68,7 @@ async function run() {
     //     res.send(result)
     // })
 
-    //all item select on any email address
+    // all item select on any email address
     // app.get('/equipment/:email', async(req, res) =>{
     //     const email = req.params.email 
     //     if(!email){
@@ -89,6 +96,13 @@ async function run() {
                 }
         res.send(result)
 
+    })
+
+    app.delete('/equipment/:id', async(req, res) => {
+        const id = req.params.id 
+        const query = { _id: new ObjectId(id) }
+        const result = await equipmentCollection.deleteOne(query);
+        res.send(result)
     })
 
   
