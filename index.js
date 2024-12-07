@@ -41,7 +41,7 @@ async function run() {
         res.send(result)
     })
 
-    app.get('/addEquipment/:id', async(req, res) =>{
+    app.get('/equipment/:email/:id', async(req, res) =>{
         const id = req.params.id 
         const query = {_id: new ObjectId(id)}
         const result = await equipmentCollection.findOne(query) 
@@ -54,35 +54,6 @@ async function run() {
         const result = await equipmentCollection.insertOne(newEquipment)
         res.send(result)
     })
-//it is s important
-    // app.get('/equipment/:email', async(req, res) =>{
-    //     const email = req.params.email
-    //     if(!email){
-    //         return res.status(400).send({ message: 'Email is required'})
-    //     }
-    //     const cursor = equipmentCollection.find({ UserEmail: email})
-    //     const result = await cursor.toArray()
-    //     if(result.length === 0){
-    //         return res.status(404).send({ message: ' Unfortunately , No equipment found for this user.'})
-    //     }
-    //     res.send(result)
-    // })
-
-    // all item select on any email address
-    // app.get('/equipment/:email', async(req, res) =>{
-    //     const email = req.params.email 
-    //     if(!email){
-    //         return res.status(400).send({ message: 'Email is required'})
-    //     } 
-    //     const cursor = equipmentCollection.find()
-    //     const result = await cursor.toArray()
-    //     if(result.length === 0){
-    //                 return res.status(404).send({ message: ' Unfortunately , No equipment found for this user.'})
-    //             }
-    //     res.send(result)
-
-    // })
-
 
     app.get('/equipment/:email', async(req, res) =>{
         const email = req.params.email 
