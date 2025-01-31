@@ -25,7 +25,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    // await client.connect();
+    await client.connect();
 
     const equipmentCollection = client.db('equipmentDB').collection('equipment')
 
@@ -57,6 +57,7 @@ async function run() {
 
     app.get('/equipment/:email', async(req, res) =>{
         const email = req.params.email 
+        // console.log(email)
         if(!email){
             return res.status(400).send({ message: 'Email is required'})
         } 
