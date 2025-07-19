@@ -5,7 +5,10 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000
 const app = express()
 
-app.use(cors())
+app.use(cors({
+    origin: ["http://localhost:5173", "https://finicky-camp.surge.sh/"],
+    credentials: true,
+}))
 app.use(express.json())
 
 
@@ -25,10 +28,25 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     await client.connect();
+    const db = client.db("equipmentDB")
+    const equipmentCollection = db.collection('equipment')
+    const userCollection = db.collection('user')
 
-    const equipmentCollection = client.db('equipmentDB').collection('equipment')
-
-    const userCollection = client.db('equipmentDB').collection('user')
+    app.post("/users/:email", async(req, res) =>{
+        const email = req.params.email;
+        const user = req.body;
+        const query = { email }
+        const isExist = await userCollection.findOne({email});
+        if(isExist){
+            return res.send(isExist)
+        }
+        const result = await userCollection.insertOne({
+            ...user,
+            role: "customer",
+            timestamp: Date.now()
+        })
+        res.send(result)
+    })
 
     app.get('/addEquipment', async(req, res)=>{
         const cursor = equipmentCollection.find().limit(6)
