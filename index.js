@@ -31,11 +31,11 @@ async function run() {
     const db = client.db("equipmentDB")
     const equipmentCollection = db.collection('equipment')
     const userCollection = db.collection('user')
+    const reviewCollection = db.collection("review")
 
     app.post("/users/:email", async(req, res) =>{
         const email = req.params.email;
         const user = req.body;
-        const query = { email }
         const isExist = await userCollection.findOne({email});
         if(isExist){
             return res.send(isExist)
@@ -48,8 +48,29 @@ async function run() {
         res.send(result)
     })
 
+    app.post("/review/:email", async(req, res) =>{
+        const email = req.params.email;
+        const review = req.body;
+        const isExist = await reviewCollection.findOne({email})
+        if(isExist){
+            return res.send(isExist)
+        }
+        const result = await reviewCollection.insertOne({
+            ...review,
+            userEmail: email,
+            timestamp: Date.now()
+        })
+        res.send(result)
+    })
+
+    app.get("/reviews/:itemId", async(req, res) =>{
+        const itemId = req.params.itemId;
+        const reviews = await reviewCollection.find({ itemId}).toArray();
+        res.send(reviews)
+    })
+
     app.get('/addEquipment', async(req, res)=>{
-        const cursor = equipmentCollection.find().limit(6)
+        const cursor = equipmentCollection.find().limit(8)
         const result = await cursor.toArray()
         res.send(result)
     })
